@@ -20,12 +20,16 @@
 <body>
     <header class="header">
         <div class="header_inner">
+            @auth
             <div class="header_title">
+                @if(auth()->user()->role === 1)
+                <a href="/admin/attendance/list">COACHTECH</a>
+                @else
                 <a href="/attendance">COACHTECH</a>
+                @endif
             </div>
             <nav class="header_nav">
                 <ul class="nav_content">
-                    @auth
                     <li class="nav_content-list">
                         @if(auth()->user()->role === 1)
                         <a href="/admin/attendance/list">勤怠一覧</a>
@@ -53,9 +57,13 @@
                             <button class="header_nav-button" type="submit">ログアウト</button>
                         </form>
                     </li>
-                    @endauth
                 </ul>
             </nav>
+            @else
+            <div class="header_title">
+                <a href="">COACHTECH</a>
+            </div>
+            @endauth
         </div>
     </header>
 

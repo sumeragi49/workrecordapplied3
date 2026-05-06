@@ -23,9 +23,11 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/admin/login', [AuthenticatedSessionController::class, 'store']);
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'attendance']);
+});
 
+Route::middleware(['auth'])->group(function () {
     Route::post('/attendance/start', [AttendanceController::class, 'workStart'])->name('work.start');
 
     Route::patch('/attendance/end', [AttendanceController::class, 'workEnd'])->name('work.end');

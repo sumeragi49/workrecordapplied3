@@ -1,0 +1,40 @@
+.email-induction {
+    padding-top: 150px;
+    padding-bottom: 250px;
+    background: #ffffff;
+}
+
+.header-title {
+    text-align: center;
+}
+
+.header-title h1 {
+    font-weight:bold;
+    font-size: 24px;
+}
+
+.email-button {
+    text-align:center;
+    margin:50px;
+}
+
+.email-button a {
+    padding:10px 20px;
+    background:#eee;
+    border:1px solid #000000;
+    border-radius: 5px;
+    color: #000000;
+    text-decoration:none;
+    font-weight: bold;
+}
+
+.resend-form {
+    text-align:center;
+}
+
+.resend-form-button button {
+    background:#ffffff;
+    border:none;
+    color: #4169E1;
+}
+

@@ -8,6 +8,7 @@ use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Responses\RegisterResponses;
 use App\Http\Responses\LoginResponse;
 use App\Http\Responses\LogoutResponse;
 use App\Models\User;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 
@@ -59,6 +61,10 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(RegisterRequest::class, RegisterRequest::class);
+
+        Fortify::verifyEmailView(function () {
+            return view('auth.verify-email');
+        });
 
         Fortify::loginView(function () {
             if (request()->is('admin/*')) {
