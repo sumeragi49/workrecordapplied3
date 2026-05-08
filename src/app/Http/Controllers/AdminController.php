@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminController extends Controller
 {
@@ -152,5 +153,62 @@ class AdminController extends Controller
         $mode = 'create';
 
         return view('admin.detail', compact('targetDate', 'user', 'mode'));
+    }
+
+    public function exportCsv($userId, $month)
+    {
+        $staff = User::findOrFail($userId);
+        $targetDate = Carbon::parse($month)->startOfMonth();
+        $daysInMonth = $targetDate->daysInMonth;
+
+        $attendances = Attendance::with('breaks')
+                    -> where('user_id', $userId)
+                    -> whereBetween('date', [$targetDate->copy()->startOfMonth(), $targetDate->copy()->endOfMonth()])
+                    -> get()
+                    -> keyBy(function($item) {
+                        return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+                    });
+
+        return new StreamedResponse(function () use ($staff, $targetDate, $daysInMonth, $attendances) {
+            $handle = fopen('php://output', 'w');
+
+            fwrite($handle, pack('C*', 0xEF, 0xBB, 0xBF));
+
+            fputcsv($handle, ['日付', '氏名', '出勤時間', '退勤時間', '休憩', '合計']);
+
+            for ($i = 1; $i <= $daysInMonth; $i++) {
+                $dateString = $targetDate->copy()->day($i)->format('Y-m-d');
+                $record = $attendances->get($dateString);
+
+                $timeStart =  '-';
+                $timeEnd =  '-';
+                $breakTime = '00:00';
+                $workTime = '00:00';
+
+                if  ($record) {
+                    $timeStart = $record->time_start ?? '-';
+                    $timeEnd = $record->time_end ?? '-';
+
+                    $breakTime = $record->getBreakTotalMinutesAttribute();
+
+                    if ($record->time_end) {
+                        $workTime = $record->getWorkTotalMinutesAttribute();
+                    }
+                }
+
+                fputcsv($handle, [
+                    $dateString,
+                    $staff['name'],
+                    $timeStart,
+                    $timeEnd,
+                    $breakTime,
+                    $workTime
+                ]);
+            }
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"勤怠_{$staff['name']}_{$month}.csv\"",
+        ]);
     }
 }

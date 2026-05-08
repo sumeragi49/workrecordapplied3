@@ -10,7 +10,7 @@
         <div class="index_title">
             <h1>❙ 勤怠一覧</h1>
         </div>
-        <form class="index-month-calender" action="{{ route('admin.staff.attendance', $userId) }}" method="get">
+        <form id="myForm" class="index-month-calender" action="{{ route('admin.staff.attendance', $userId) }}" method="get">
             <div class="prev_month">
                 <a href="{{ route('admin.staff.attendance', [$userId, 'month' => $prevMonth]) }}">← 前月</a>
             </div>
@@ -64,6 +64,9 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div class="csv-button">
+            <a href="{{ route('attendance.csv', [$userId, 'month'=>$month]) }}">CSV出力</a>
         </div>
     </div>
 </div>
