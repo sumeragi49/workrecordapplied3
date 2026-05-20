@@ -8,6 +8,7 @@ use App\Models\BreakTime;
 use App\Models\AttendanceRequest;
 use App\Models\BreakRequest;
 use App\Http\Requests\CorrectionRequest;
+use App\Http\Requests\CreateNewRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -153,6 +154,146 @@ class AdminController extends Controller
         $mode = 'create';
 
         return view('admin.detail', compact('targetDate', 'user', 'mode'));
+    }
+
+    public function newAttendanceStore(CreateNewRequest $request, $targetDate, $userId)
+    {
+        $data = $request->getFormattedDate($targetDate);
+
+        $attendance = null;
+
+        DB::transaction(function () use ($data, $targetDate, $userId, &$attendance) {
+            $attendance = Attendance::create([
+                'user_id' => $userId,
+                'date' => $targetDate,
+                'time_start' => $data['time_start'],
+                'time_end' => $data['time_end'],
+                'content' => $data['content'],
+                'status' => '1',
+            ]);
+
+            $break = BreakTime::create([
+                'attendance_id' => $attendance['id'],
+                'break_start' => $data['break_start'],
+                'break_end' => $data['break_end'],
+            ]);
+
+            $attendanceRequest = AttendanceRequest::create([
+                'attendance_id' => $attendance['id'],
+                'request_time_start' => $data['time_start'],
+                'request_time_end' => $data['time_end'],
+                'request_content' => $data['content'],
+            ]);
+
+            $breakRequest = BreakRequest::create([
+                'attendance_correct_request_id' => $attendanceRequest['id'],
+                'break_id' => $break['id'],
+                'request_break_start' => $data['break_start'],
+                'request_break_end' => $data['break_end'],
+            ]);
+        });
+
+        return redirect()->route('admin.staff.attendance');
+    }
+
+    public function requestList(Request $request)
+    {
+        $user = Auth::user();
+
+        $isAdmin = $request->input('is_admin_request');
+
+        if ($isAdmin) {
+            $status = $request->query('status', '1');
+
+            $attendances = Attendance::with('user')
+                        -> when($status == 1, function ($query) {
+                            return $query->where('status', '1');
+                        })->when($status == 2, function ($query) {
+                            return $query->where('status', '2');
+                        })-> orderBy('date', 'asc')
+                        -> paginate(10);
+        } else {
+            $status = $request->query('status', '1');
+
+            $attendances = Attendance::where('user_id', $user->id)
+                        -> when($status == 1, function ($query) {
+                            return $query->where('status', '1');
+                        })->when($status == 2, function ($query) {
+                            return $query->where('status', '2');
+                        })-> orderBy('date', 'asc')
+                        -> paginate(10);
+        }
+
+        return view('staff.requestList',compact('user', 'status', 'attendances'));
+    }
+
+    public function approval(Request $request,$attendanceCorrectRequestId)
+    {
+        $user = Auth::user();
+
+        $isAdmin = $request->input('is_admin_request');
+
+        if ($isAdmin) {
+
+            $attendanceRequest = AttendanceRequest::with('attendance.user','breakRequests')
+                          -> findOrFail($attendanceCorrectRequestId);
+
+            $breakRequests = $attendanceRequest->breakRequests->toArray();
+
+            $mode = 'approval';
+
+        } else {
+            $attendanceRequest = AttendanceRequest::with('attendance.user','breakRequests')
+                          -> findOrFail($attendanceCorrectRequestId);
+
+            $breakRequests = $attendanceRequest->breakRequests->toArray();
+
+            $mode = 'unApproval';
+        }
+
+        return view('admin.correction', compact('mode', 'attendanceRequest', 'breakRequests'));
+    }
+
+    public function approvalStore(Request $request, $attendanceRequestId)
+    {
+        $user = Auth::user();
+
+        $correctRecord = AttendanceRequest::with('attendance', 'breakRequests')->findOrFail($attendanceRequestId);
+
+        $baseDate = Carbon::parse($correctRecord->attendance['date']);
+
+        DB::transaction(function () use ($correctRecord, $baseDate, $attendanceRequestId) {
+
+            $attendance = Attendance::findOrFail($correctRecord->attendance_id);
+            $attendance->update([
+                'time_start' => $baseDate->copy()->setTimeFromTimeString($correctRecord['request_time_start']),
+                'time_end' => $baseDate->copy()->setTimeFromTimeString($correctRecord['request_time_end']),
+                'status' => 2,
+                'content' => $correctRecord['request_content'],
+            ]);
+
+            foreach ($correctRecord->breakRequests as $breakRequest) {
+                if ($breakRequest->break_id && $breakRequest->request_break_start) {
+                    $originalBreak = BreakTime::findOrFail($breakRequest->break_id);
+                    if ($originalBreak) {
+                        $originalBreak->update([
+                            'break_start' => $baseDate->copy()->setTimeFromTimeString($breakRequest['request_break_start']),
+                            'break_end' => $baseDate->copy()->setTimeFromTimeString($breakRequest['request_break_end']),
+                        ]);
+                    }
+                }
+
+                if ($breakRequest->new_break_start) {
+                    BreakTime::create ([
+                        'attendance_id' => $attendance['id'],
+                        'break_start' => $baseDate->copy()->setTimeFromTimeString($breakRequest['new_break_start']),
+                        'break_end' => $baseDate->copy()->setTimeFromTimeString($breakRequest['new_break_end']),
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->back();
     }
 
     public function exportCsv($userId, $month)

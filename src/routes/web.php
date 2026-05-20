@@ -42,7 +42,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/attendance/detail/store/{attendanceId}', [AttendanceController::class, 'requestStore'])->name('attendance.request');
 
-    Route::post('/attendance/staff', [AttendanceController::class, 'newAttendance'])->name('new.attendance');
+    Route::get('/attendance/new', [AttendanceController::class, 'newAttendance'])->name('new.attendance');
+
+    Route::post('/attendance/new', [AttendanceController::class, 'newAttendance'])->name('new.attendance');
+
+    Route::post('/attendance/new/store/{targetDate}/{userId}', [AttendanceController::class, 'newAttendanceStore'])->name('new.attendance.store');
 });
 
 Route::middleware(['auth','admin'])->group(function () {
@@ -56,17 +60,19 @@ Route::middleware(['auth','admin'])->group(function () {
 
     Route::get('/admin/staff/list', [AdminController::class, 'staffList']);
 
-    Route::get('/admin/attendance/staff/{attendanceId}', [AdminController::class, 'staffAttendance'])->name('admin.staff.attendance');
+    Route::get('/admin/attendance/staff/{userId}', [AdminController::class, 'staffAttendance'])->name('admin.staff.attendance');
 
     Route::post('/admin/attendance/staff/{userId}', [AdminController::class, 'newAttendance'])->name('admin.new.attendance');
+
+    Route::post('/admin/attendance/new/store/{targetDate}/{userId}', [AdminController::class, 'newAttendanceStore'])->name('admin.new.attendance.store');
 
     Route::get('/admin/attendance/staff/{userId}/{month}/csv', [AdminController::class, 'exportCsv'])->name('attendance.csv');
 });
 
 Route::middleware(['auth', 'CheckRole'])->group(function () {
-    Route::get('/stamp_correction_request/list', [AttendanceController::class, 'requestList'])->name('request.list');
+    Route::get('/stamp_correction_request/list', [AdminController::class, 'requestList'])->name('request.list');
 
-    Route::get('/stamp_correction_request/approval/{attendanceCorrectRequestId}', [AttendanceController::class, 'approval'])->name('request.approval');
+    Route::get('/stamp_correction_request/approval/{attendanceCorrectRequestId}', [AdminController::class, 'approval'])->name('request.approval');
 
-    Route::post('/stamp_correction_request/approval/{attendanceCorrectRequestId}/store', [AttendanceController::class, 'approvalStore'])->name('approval.store');
+    Route::post('/stamp_correction_request/approval/{attendanceCorrectRequestId}/store', [AdminController::class, 'approvalStore'])->name('approval.store');
 });

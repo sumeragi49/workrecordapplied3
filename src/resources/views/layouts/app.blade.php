@@ -23,9 +23,13 @@
             @auth
             <div class="header_title">
                 @if(auth()->user()->role === 1)
-                <a href="/admin/attendance/list">COACHTECH</a>
+                <a class="header-logo" href="/admin/attendance/list">
+                    <img src="{{ asset('storage/images/COACHTECHヘッダーロゴ (1).png') }}" alt="COACHTECH">
+                </a>
                 @else
-                <a href="/attendance">COACHTECH</a>
+                <a class="header-logo" href="/attendance">
+                    <img src="{{ asset('storage/images/COACHTECHヘッダーロゴ (1).png') }}" alt="COACHTECH">
+                </a>
                 @endif
             </div>
             <nav class="header_nav">

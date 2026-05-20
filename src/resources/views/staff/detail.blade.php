@@ -24,7 +24,7 @@
                     <th class="form_title">日付</th>
                     <td class="form_item-date">
                         <span>{{ $attendances['date']->format('Y') }}年</span>
-                        <span>{{ $attendances['date']->format('m年d日') }}</span>
+                        <span>{{ $attendances['date']->format('m月d日') }}</span>
                     </td>
                 </tr>
                 <tr class="form_content">
@@ -91,7 +91,7 @@
                     <th class="form_title">日付</th>
                     <td class="form_item-date">
                         <span>{{ $attendances['date']->format('Y') }}年</span>
-                        <span>{{ $attendances['date']->format('m年d日') }}</span>
+                        <span>{{ $attendances['date']->format('m月d日') }}</span>
                     </td>
                 </tr>
                 <tr class="form_content">
@@ -193,9 +193,10 @@
         <div class="detail_title">
             <h1>❙ 勤怠詳細</h1>
         </div>
-        <form class="request_form" action="" method="post">
+        <form class="request_form" action="{{ route('new.attendance.store', [$targetDate, $user['id']]) }}" method="post">
             @csrf
             <table class="attendance_table">
+                <input type="hidden" name="user_id" value="{{ $user['id'] }}">
                 <tr class="form_content">
                     <th class="form_title">名前</th>
                     <td class="form_item">{{ $user['name'] }}</td>
@@ -204,7 +205,7 @@
                     <th class="form_title">日付</th>
                     <td class="form_item-date">
                         <span>{{ $targetDate->format('Y') }}年</span>
-                        <span>{{ $targetDate->format('m年d日') }}</span>
+                        <span>{{ $targetDate->format('m月d日') }}</span>
                     </td>
                 </tr>
                 <tr class="form_content">
@@ -233,17 +234,17 @@
                     </th>
                     <td class="form_item">
                         <div class="form-item-content">
-                            <input type="time" name="breaks[break_start]" value="">
+                            <input type="time" name="break_start" value="">
                             <span>~</span>
-                            <input type="time" name="breaks[break_end]" value="">
+                            <input type="time" name="break_end" value="">
                         </div>
                         <div class="form_error">
-                            @error('breaks.break_start')
+                            @error('break_start')
                             {{ $message }}
                             @enderror
                         </div>
                         <div class="form_error">
-                            @error('breaks.break_end')
+                            @error('break_end')
                             {{ $message }}
                             @enderror
                         </div>
@@ -255,7 +256,7 @@
                     </th>
                     <td class="form_item">
                         <div class="form-item-content">
-                            <textarea name="request_content" value=""></textarea>
+                            <textarea name="content" value=""></textarea>
                         </div>
                         <div class="form_error">
                             @error('content')
@@ -289,7 +290,7 @@
                     <th class="form_title">日付</th>
                     <td class="form_item-date">
                         <span>{{ $attendanceRequest['attendance']['date']->format('Y') }}年</span>
-                        <span>{{ $attendanceRequest['attendance']['date']->format('m年d日') }}</span>
+                        <span>{{ $attendanceRequest['attendance']['date']->format('m月d日') }}</span>
                     </td>
                 </tr>
                 <tr class="form_content">
@@ -363,7 +364,7 @@
                     <th class="form_title">日付</th>
                     <td class="form_item-date">
                         <span>{{ $attendanceRequest['attendance']['date']->format('Y') }}年</span>
-                        <span>{{ $attendanceRequest['attendance']['date']->format('m年d日') }}</span>
+                        <span>{{ $attendanceRequest['attendance']['date']->format('m月d日') }}</span>
                     </td>
                 </tr>
                 <tr class="form_content">
