@@ -96,6 +96,14 @@ td textarea {
     border-radius: 5px;
 }
 
+.form_button-fixed {
+    padding: 5px 20px;
+    background: grey;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+}
+
 .form_error {
     color: #ff0000;
     text-align: left;

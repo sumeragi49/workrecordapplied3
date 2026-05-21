@@ -1071,8 +1071,6 @@ class AttendanceTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('request.list', ['status' => '2']));
 
-        $response->dump();
-
         $response->assertStatus(200);
         $response->assertSee('山田太郎');
         $response->assertSee('2026/05/01');
@@ -1120,8 +1118,6 @@ class AttendanceTest extends TestCase
         $response = $this->get(route('request.list'));
 
         $response = $this->get(route('attendance.show', ['attendanceId' => $attendance->id]));
-
-        $response->dump();
 
         $response->assertStatus(200);
     }

@@ -72,7 +72,7 @@
                 @if($attendanceRequest->attendance['status'] === 1)
                 <button type="submit" class="form_button-submit">承認</button>
                 @elseif($attendanceRequest->attendance['status'] === 2)
-                <button type="submit" class="form_button-submit" disabled>承認済み</button>
+                <button type="submit" class="form_button-fixed" disabled>承認済み</button>
                 @endif
             </div>
         </form>
