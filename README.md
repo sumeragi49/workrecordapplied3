@@ -41,6 +41,18 @@
 ・laravel/fortify v1.19.1<br>
 ・PHPUnit 9.6.34<br>
 
+## 連携外部サイト<br>
+
+・mailhog<br>
+
+## PHPUnitに関して<br>
+テスト用DB<br>
+・docker compose exec mysql bash<br>
+・mysql -u root -p (password:root)<br>
+MySQLログイン後<br>
+・CREATE DATABASE demo_test;<br>
+
+
 ### test ユーザー<br>
 staff<br>
 ・id:1 name:山田太郎 email:test1@example.com password:coachtech1001<br>
