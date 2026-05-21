@@ -70,7 +70,11 @@
                 </tr>
             </table>
             <div class="form_button">
+                @if($attendanceRequest->attendance['status'] === 1)
                 <span>・承認待ちのため修正はできません。</span>
+                @elseif($attendanceRequest->attendance['status'] === 2)
+                <button type="submit" class="form_button-submit" disabled>承認済み</button>
+                @endif
             </div>
         </div>
     </div>

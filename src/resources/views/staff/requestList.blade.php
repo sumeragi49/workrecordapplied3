@@ -42,7 +42,11 @@
                                 <td>{{ $attendance['content'] }}</td>
                                 <td>{{ $attendance['updated_at']->format('Y/m/d') }}</td>
                                 <td>
-                                    <a class="detail-attendance-link" href="{{ route('request.approval', $attendance['attendanceRequest']['id']) }}">詳細</a>
+                                    @if($user->role === 1)
+                                    <a class="detail-attendance-link" href="{{ route('request.approval', ['attendanceCorrectRequestId' => $attendance->attendanceRequest->id]) }}">詳細</a>
+                                    @else
+                                    <a class="detail-attendance-link" href="{{ route('attendance.show', ['attendanceId' => $attendance->id]) }}">詳細</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
