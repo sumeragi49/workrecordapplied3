@@ -53,6 +53,7 @@ admin<br>
 ・id:7 name:山田花子 email:test7@example.com password:coachtech1007<br>
 
 ### ER図<br>
+<img width="1555" height="1245" alt="スクリーンショット 2026-05-20 124747" src="https://github.com/user-attachments/assets/b3917f33-6315-4fed-94f7-be1300efeef2" />
 
 
 
