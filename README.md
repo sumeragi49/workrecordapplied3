@@ -61,6 +61,8 @@ staff<br>
 ・id:4 name:山本敬吉 email:test4@example.com password:coachtech1004<br>
 ・id:5 name:秋田朋美 email:test5@example.com password:coachtech1005<br>
 ・id:6 name:中西敦夫 email:test6@example.com password:coachtech1006<br>
+*2026年1月に1か月分の勤怠のダミーデータを作成しています<br>
+
 admin<br>
 ・id:7 name:山田花子 email:test7@example.com password:coachtech1007<br>
 
