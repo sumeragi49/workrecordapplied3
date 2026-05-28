@@ -66,7 +66,7 @@ database.phpのファイルを開き,mysqlの部分をコピーし,下にmysql_t
 | 項目 | 変更前 | 変更後 |
 | --- | --- | --- |
 | APP_ENV | local | test |
-| APP_KEY | ランダムなkey | |
+| APP_KEY | ランダムなkey | (空欄にする) |
 | DB_DATABASE | laravel_db | demo_test |
 | DB_USERNAME | laravel_user | root |
 | DB_PASSWORD | laravel_pass | root |
@@ -76,8 +76,9 @@ database.phpのファイルを開き,mysqlの部分をコピーし,下にmysql_t
 *必要であれば php artisan config:clear<br>
 ・php artisan migrate --env=testing<br>
 <br>
-phpunit.xmlの変更
+phpunit.xmlの変更<br>
 | 項目 | 変更前 | 変更後 |
+| --- | --- | --- |
 | DB_CONNECTION | "sqlite" | "mysql_test" |
 | DB_DATABASE | "memory" | "demo_test" |
 ・2つの変更点とも共通して「<!-- -->」を削除する(中身は消さない)<br>
