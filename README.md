@@ -63,6 +63,7 @@ database.phpのファイルを開き,mysqlの部分をコピーし,下にmysql_t
 テスト用の.envファイルを作成<br>
 ・.envをコピーして「.env.testing」作成<br>
 ・PHPコンテナ上で コマンド cp .env .env.testing<br>
+<br>
 | 項目 | 変更前 | 変更後 |
 | --- | --- | --- |
 | APP_ENV | local | test |
@@ -77,6 +78,7 @@ database.phpのファイルを開き,mysqlの部分をコピーし,下にmysql_t
 ・php artisan migrate --env=testing<br>
 <br>
 phpunit.xmlの変更<br>
+<br>
 | 項目 | 変更前 | 変更後 |
 | --- | --- | --- |
 | DB_CONNECTION | "sqlite" | "mysql_test" |
