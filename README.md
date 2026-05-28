@@ -51,7 +51,43 @@
 ・mysql -u root -p (password:root)<br>
 MySQLログイン後<br>
 ・CREATE DATABASE demo_test;<br>
-
+configファイルの変更<br>
+<br>
+database.phpのファイルを開き,mysqlの部分をコピーし,下にmysql_testを作成し貼り付ける。その際の変更点を以下の表とする<br>
+| 項目 | 変更前 | 変更後 |
+| --- | --- | --- |
+| 'database' | env('DB_DATABASE', 'forge') | 'demo_test' |
+| 'username' | env('DB_USERNAME', 'forge') | 'root' |
+| 'password' | env('DB_PASSWORD', '') | 'root' |
+<br>
+テスト用の.envファイルを作成<br>
+・.envをコピーして「.env.testing」作成<br>
+・PHPコンテナ上で コマンド cp .env .env.testing<br>
+| 項目 | 変更前 | 変更後 |
+| --- | --- | --- |
+| APP_ENV | local | test |
+| APP_KEY | ランダムなkey | |
+| DB_DATABASE | laravel_db | demo_test |
+| DB_USERNAME | laravel_user | root |
+| DB_PASSWORD | laravel_pass | root |
+<br>
+・APP_KEYに新たなテスト用のアプリケーション用キーを作成<br>
+・PHPコンテナ上で コマンド php artisan key:generate --env=testing<br>
+*必要であれば php artisan config:clear<br>
+・php artisan migrate --env=testing<br>
+<br>
+phpunit.xmlの変更
+| 項目 | 変更前 | 変更後 |
+| DB_CONNECTION | "sqlite" | "mysql_test" |
+| DB_DATABASE | "memory" | "demo_test" |
+・2つの変更点とも共通して「<!-- -->」を削除する(中身は消さない)<br>
+<br>
+テスト実行コマンド<br>
+・vendor/bin/phpunit tests/Feature/RegisterTest.php<br>
+・vendor/bin/phpunit tests/Feature/LoginTest.php<br>
+・vendor/bin/phpunit tests/Feature/AttendanceTest.php<br>
+・vendor/bin/phpunit tests/Feature/AdminTest.php<br>
+・vendor/bin/phpunit tests/Feature/EmailVerificationTest.php<br>
 
 ### test ユーザー<br>
 staff<br>
