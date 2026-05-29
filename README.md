@@ -94,6 +94,71 @@ phpunit.xmlの変更<br>
 ・vendor/bin/phpunit tests/Feature/AdminTest.php<br>
 ・vendor/bin/phpunit tests/Feature/EmailVerificationTest.php<br>
 
+## テーブル仕様書<br>
+### users テーブル<br>
+
+| カラム名 | 型 | PRIMARY KEY | UNIQUE KEY | NOT NULL | FOREIGN KEY |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint |  ○  |     |  ○  |     |
+| name | vanchar(255) |     |     |  ○  |     |
+| email | vanchar(255) |     |     |  ○  |     |
+| email_verified_at | timestamp |     |     |     |     |
+| password | vanchar(255) |     |     |  ○  |     |
+| role | tinyInteger |     |     |  ○  |     |
+| created_at | timestamp |     |     |     |     |
+| updated_at | timestamp |     |     |     |     |
+
+### attendances テーブル<br>
+
+| カラム名 | 型 | PRIMARY KEY | UNIQUE KEY | NOT NULL | FOREIGN KEY |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint |  ○  |     |  ○  |     |
+| user_id | unsigned bigint |     |     |  ○  | users(id) |
+| date | date |     |     |  ○  |     |
+| time_start | datetime |     |     |  ○  |     |
+| time_end | datetime |     |     |  ○  |     |
+| content | vanchar(255) |     |     |     |     |
+| status | tinyInteger |     |     |     |     |
+| created_at | timestamp |     |     |     |     |
+| updated_at | timestamp |     |     |     |     |
+
+### breaks テーブル<br>
+
+| カラム名 | 型 | PRIMARY KEY | UNIQUE KEY | NOT NULL | FOREIGN KEY |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint |  ○  |     |  ○  |     |
+| attendance_id | unsigned bigint |     |     |  ○  |  attendance(id)  |
+| break_start | datetime |     |     |     |     |
+| break_end | datetime |     |     |     |     |
+| created_at | timestamp |     |     |     |     |
+| updated_at | timestamp |     |     |     |     |
+
+### attendance_correct_requests テーブル<br>
+
+| カラム名 | 型 | PRIMARY KEY | UNIQUE KEY | NOT NULL | FOREIGN KEY |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint |  ○  |     |  ○  |     |
+| attendance_id | unsigned bigint |     |     |  ○  |  attendance(id)  |
+| request_time_start | datetime |     |     |     |
+| request_time_end | datetime |     |     |     |     |
+| request_content | vanchar(255) |     |     |  ○  |     |
+| created_at | timestamp |     |     |     |     |
+| updated_at | timestamp |     |     |     |     |
+
+### break_correct_requests テーブル<br>
+
+| カラム名 | 型 | PRIMARY KEY | UNIQUE KEY | NOT NULL | FOREIGN KEY |
+| --- | --- | --- | --- | --- | --- |
+| id | unsigned bigint |  ○  |     |  ○  |     |
+| attendance_correct_request_id | unsigned bigint |     |     |  ○  |  attendance(id)  |
+| break_id | unsigned bigint |     |     |     | breaks(id) |
+| request_break_start | datetime |     |     |     |     |
+| request_break_end | datetime |     |     |     |     |
+| new_break_start | datetime |     |     |     |     |
+| new_break_end | datetime |     |     |     |     |
+| created_at | timestamp |     |     |     |     |
+| updated_at | timestamp |     |     |     |     |
+
 ### test ユーザー<br>
 staff<br>
 ・id:1 name:山田太郎 email:test1@example.com password:coachtech1001<br>
